@@ -217,32 +217,13 @@ if "chat_engine" not in st.session_state.keys():  # Initialize the chat engine
 uploaded_file = st.file_uploader("Upload your CV (PDF only)", type="pdf")
 if uploaded_file is not None:
     with st.spinner('Converting PDF to images...'):
-        # Convert PDF to images
-        print("Ora converto l'immagine")
-        # Save the uploaded file to a temporary location
-        temp_file_path = os.path.join("./CV", uploaded_file.name)
-        with open(temp_file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-            
-        # Convert PDF to images
-        #images = convert_from_path(temp_file_path,poppler_path='./poppler-24.02.0/Library/bin')
-        #image_paths = []
-        #for i, image in enumerate(images):
-        #    image_path = f'page_{i}.jpg'
-        #    image.save(image_path, 'JPEG')
-        #    image_paths.append(image_path)
-        
-        file_path = temp_file_path
-        with fitz.open(file_path) as doc:
-            #doc = fitz.open(file_path)  # open document
+        with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
             image_paths = []
             for i, page in enumerate(doc):
                 pix = page.get_pixmap()  # render page to an image
                 image_path = f'page_{i}.jpg'
                 pix.save(f"page_{i}.jpg")
                 image_paths.append(image_path)
-        
-        
 
         concatenated_image = ""
 
@@ -252,29 +233,15 @@ if uploaded_file is not None:
                 img_data = base64.b64encode(img_file.read()).decode()
                 concatenated_image += img_data
 
-         # Now you can use the concatenated_image variable as needed
-        # Delete the temporary image files
         for image_path in image_paths:
             os.remove(image_path)
 
-        # Delete the temporary PDF file
-        try:
-            os.remove(temp_file_path)
-        except PermissionError:
-            time.sleep(0.5)  # Wait for 0.2 seconds
-            os.remove(temp_file_path)
-        
     st.success('PDF converted to images successfully!')
     with st.spinner('Analyzing the CV...'):
         st.session_state.JSON_CV = extract_text_from_images(concatenated_image)
-        
-        #get_first_advice()
-
-
 
 if prompt := st.chat_input("Ask a question about your CV"):  # Prompt for user input and save to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    #print_text()
 
 
 
