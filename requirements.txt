@@ -1,0 +1,12 @@
+streamlit
+openai
+PyMuPDF
+llama-index
+llama-index-llms-openai
+nltk
+pypdf
+arxiv
+elsapy
+openpyxl
+pandas
+pdf2image
