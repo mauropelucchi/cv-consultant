@@ -197,19 +197,12 @@ def get_first_advice(JSON_CV):
 def load_data():
     with st.spinner(text="Loading and indexing all the documentation – hang tight! This should take 1-2 minutes."):
         with st.expander('See process'):
-            if not index_exists:
-                st.text("Loading new documents...")
-                docs = SimpleDirectoryReader(input_dir="./data/dataset").load_data()
-                number_of_documents = len(docs)
-                st.text(f"{number_of_documents} documents loaded")
-                st.text("Preparing the index...")
-                index = VectorStoreIndex.from_documents(docs, show_progress=True)
-                index.storage_context.persist(persist_dir="persist_directory")
-            else:
-                st.text("Loading the index...")
-                storage_context = StorageContext.from_defaults(persist_dir=persist_directory)
-                index = load_index_from_storage(storage_context)
-                docs = SimpleDirectoryReader(input_dir="./data/dataset").load_data()
+            st.text("Loading new documents...")
+            docs = SimpleDirectoryReader(input_dir="./data").load_data()
+            number_of_documents = len(docs)
+            st.text(f"{number_of_documents} documents loaded")
+            st.text("Preparing the index...")
+            index = VectorStoreIndex.from_documents(docs, show_progress=True)
 
         st.text("Index is ready")
         return index
