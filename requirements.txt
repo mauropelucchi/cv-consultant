@@ -1,8 +1,8 @@
-streamlit
-openai
+streamlit==1.38.0
+openai==1.45.0
 PyMuPDF
-llama-index
-llama-index-llms-openai
+llama-index==0.11.10
+llama-index-llms-openai==0.2.9
 nltk
 pypdf
 arxiv
